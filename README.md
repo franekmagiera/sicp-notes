@@ -148,10 +148,13 @@ Using normal-order evaluation:
 with every call, the second argument has to be evaluated as it is used in the `if` statement's predicate. 
 
 *x1* requires *1* `remainder` operation.
+
 *x2* requires *2* `remainder` operations - *1* for *x1* and *1* for itself.
+
 *x3* requires *4* `remainder` operations - *1* for *x1*; *2* for *x2* and *1* for itself.
+
 *x4* requires *7* `remainder` operations - *2* for *x2*; *4* for *x3* and *1* for itself.
 
 Finally, *x4* evaluates to *0* and expression is reduced to *x3* which again requires *4* `remainder` operations. Summing all the required evaluations up we end up with *18* evaluations.
 
-So, in this case applicative-order evaluation is much better.
+So, in this case applicative-order evaluation is better.
