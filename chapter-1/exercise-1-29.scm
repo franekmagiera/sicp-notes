@@ -1,0 +1,28 @@
+(load "sum.scm")
+
+(define (simpson f a b n)
+    (define h (/ (- b a) n))
+    (define (arg k)
+        (+ a (* k h))
+    )
+    (define (coef k)
+        (cond ((or (= k 0) (= k n)) 1)
+              ((= (remainder k 2) 0) 2)
+              (else 4)
+        )
+    )
+    (define (term k)
+        (* (coef k) (f (arg k)))
+    )
+    (define (next k)
+        (+ k 1)
+    )
+    (* (/ h 3) (sum term 0 next n))
+)
+
+(define (cube x) (* x x x))
+
+(simpson cube 0 1 100)
+(simpson cube 0 1 1000)
+
+(simpson cube 2 5 1000)

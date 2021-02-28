@@ -158,3 +158,89 @@ with every call, the second argument has to be evaluated as it is used in the `i
 Finally, *x4* evaluates to *0* and expression is reduced to *x3* which again requires *4* `remainder` operations. Summing all the required evaluations up we end up with *18* evaluations.
 
 So, in this case applicative-order evaluation is better.
+
+## Formulating abstractions
+>We have seen that procedures are, in effect, abstractions that describe compound operations on numbers independent of the particular numbers. For example, when we
+>
+> `(define (cube x) (* x x x))`
+> 
+>we are not talking about the cube of a particular number but rather about a method for obtaining the cube of any number. Of course, we could get along without ever defining this procedure, by always writing expressions such as:
+>
+> `(* 3 3 3)`
+>
+> `(* x x x)`
+>
+>and never mentioning `cube` explicitly. This would place us at a serious disadvantage, forcing us to work always at the level of the particular operations that happen to be primitives in the language (multiplication, in this case) rather than in terms of higher-level operations. *Our programs would be able to compute cubes, but our language would lack the ability to express the concept of cubing*. One of the things we should demand from a powerful programming language is the ability to build abstractions by assigning names to common patterns and then to work in terms of the abstractions directly. Procedures provide this ability. This is why all but the most primitive programming languages include mechanisms for defining procedures. 
+>
+>Yet even in numerical processing we will be severely limited in our ability to create abstractions if we are restricted to procedures whose parameters must be numbers. Often the same programming pattern will be used with a number of different procedures. To express such patterns as concepts, we will need to construct procedures that can accept procedures as arguments or return procedures as values. Procedures that manipulate procedures are called higher-order procedures.
+
+## Lambda
+`(lambda (<formal-parameters>) <body>)`
+
+### Using `let` to create local variables
+`let` is syntactic sugar for application of `lambda`
+
+Example:
+
+f(x,y) = x(1+xy)^2 + y(1-y) + (1+xy)(1-y)
+
+could be expressed as:
+
+f(x, y) = xa^2 + yb + ab; where a = 1 + xy and b = 1 - y
+
+Translating to Scheme we can bind those local variables *a* and *b* using another inner procedure:
+```
+(define (f x y)
+      (define (f-helper a b)
+            (+ (* x (square a))
+               (* y b)
+               (* a b)
+            )
+      )
+      (f-helper (+ 1 (* x y)) (- 1 y))
+)
+```
+
+This can also be expressed using `lambda`:
+```
+(define (f x y)
+      (
+            (lambda (a b)
+                  (+ (* x (square a))
+                     (* y b)
+                     (* a b)
+                  )
+            )
+      )(
+            (+ 1 (* x y))
+            (- 1 y)
+      )
+)
+```
+
+There is a special form called `let` that makes it more convenient:
+```
+(define (f x y)
+      (let (
+            (a (+ 1 (* x y)))
+            (b (- 1 y))
+      ) 
+            ( + (* x (square a ))
+                (* y b)
+                (* a b)
+            )
+      )
+)
+```
+
+Its general form is:
+```
+(let (
+      (<var1> <exp1>)
+      (<var2> <exp2>)
+)
+      <body>
+)
+```
+
+It is preferred to use `let` to define local variables instead of `define`. It is better to use `define` for internal procedures only.

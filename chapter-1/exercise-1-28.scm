@@ -1,0 +1,61 @@
+(define (even? n)
+    (= (remainder n 2) 0)
+)
+
+(define (square n)
+    (* n n )
+)
+
+(define (signal num m)
+    (if (and (not (or (= num 1) (= num (- m 1))))
+             (= (remainder (square num) m) 1) 
+        )
+        0 
+        (remainder (square num) m)
+    )
+)
+
+(define (expmod base exp m)
+    (cond ((= exp 0) 1)
+        ((even? exp)
+            (signal (expmod base (/ exp 2) m) m))
+        (else
+         (remainder (* base (expmod base (- exp 1) m))
+                    m)))
+)
+
+(define (miller-rabin-test n a)
+    (define (determine-result expmod-result n)
+        (cond ((= expmod-result 0) false)
+              ((= expmod-result (remainder 1 n)) true)
+              (else false)
+        )
+    )
+    (determine-result (expmod a (- n 1) n) n)
+)
+
+(define (test n)
+    (define (test-inner a n)
+        (cond ((= a n) true)
+              ((miller-rabin-test n a) (test-inner (+ a 1) n))
+              (else false)
+        )
+    )
+    (test-inner 1 n)
+)
+
+; should all be false - Carmichael numbers
+(test 561)
+(test 1105)
+(test 1729)
+(test 2465)
+(test 2821)
+(test 6601)
+
+; should all be true - prime numbers
+(test 97)
+(test 89)
+(test 83)
+(test 1019)
+(test 10037)
+(test 100043)

@@ -1,0 +1,30 @@
+; script has to be run from parent directory
+(load "product.scm")
+
+(define (factorial n)
+    (define (next n) (+ n 1))
+    (define (id n) n)
+    (product id 1 next n)
+)
+
+(factorial 0)
+(factorial 1)
+(factorial 2)
+(factorial 3)
+(factorial 4)
+(factorial 5)
+(factorial 6)
+(factorial 7)
+
+(define (approximate-pi n)
+    (define (square x) (* x x)) 
+    (define (numerator k)
+        (if (= k n) (* 2 (+ k 1)) (square (* 2 (+ k 1))))
+    )
+    (define (denominator k) (square (+ (* 2 k) 1)))
+    (define (term k) (/ (numerator k) (denominator k)))
+    (define (next k) (+ k 1))
+    (exact->inexact (* 8 (product term 1 next n)))
+)
+
+(approximate-pi 10000)

@@ -22,4 +22,4 @@
 (timed-prime-test 1000000000000037)
 
 ; by increasing the input 10x 
-; O(log(n*2)) = O(log(n) + log(2)) ; expect small constant increase
+; log(n*10) = log(n) + log(10) ; expect small constant increase
