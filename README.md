@@ -244,3 +244,29 @@ Its general form is:
 ```
 
 It is preferred to use `let` to define local variables instead of `define`. It is better to use `define` for internal procedures only.
+
+## Building Abstractions with Data
+>Data abstraction is a methodology that enables us to isolate how a compound data object is used from the details of how it is constructed from more primitive data objects.
+>
+>The basic idea of data abstraction is to structure the programs that are to use compound data objects so that they operate on abstract data.
+
+This methodology enables us to make use of abstraction barriers. This is done by building programs that make use only of the public methods provided by the abstraction from the "lower layer". This makes programs easier to maintain and modify. There is no need to worry about the details of how the underlying methods are implemented. In addition, underlying methods implementation can be changed and as long as the signatures and behaviour of public methods remain unchanged, previously written programs should work just fine.
+
+>What is meant by data?
+> In general, we can think of data as defined by some collection of selectors and constructors, together with specified conditions that these procedures must fulfill in order to be a valid representation.
+
+### Exercise 2.4. - procedural representation of pairs
+```
+(define (cons x y)
+      (lambda (m) (m x y))
+)
+
+(define (car z)
+      (z (lambda (p q) p))
+)
+
+(define (cdr z)
+      (z (lambda (p q) q))
+)
+```
+A hand-wavy description of this exercise: cons takes in two arguments and returns a function that takes in another function as a parameter and applies it to the two arguments passed to cons. So, to get the first argument, car calls the function returned by cons with a function that just returns the first parameter. Cdr's implementation is analogous.
