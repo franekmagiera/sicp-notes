@@ -1,0 +1,11 @@
+(define (last-pair xs)
+    (cond ((null? xs) '())
+          ((null? (cdr xs)) xs)
+          (else (last-pair (cdr xs)))
+    )
+)
+
+(last-pair (list 29 72 149 34))
+(cdr (list 2))
+(last-pair '())
+(last-pair (cons 2 '()))
