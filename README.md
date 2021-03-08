@@ -270,3 +270,6 @@ This methodology enables us to make use of abstraction barriers. This is done by
 )
 ```
 A hand-wavy description of this exercise: cons takes in two arguments and returns a function that takes in another function as a parameter and applies it to the two arguments passed to cons. So, to get the first argument, car calls the function returned by cons with a function that just returns the first parameter. Cdr's implementation is analogous.
+
+## Sequences as conventional interfaces
+Operations on sequences such as accumulate, filter, map and enumerate describe very common patterns that are useful for many different applications. By using those common methods our programs are more modular. It is also a good strategy to manage complexity. Moreover, expressing our programs using those common interfaces makes it easier to reason about them and also makes it easier for other people to understand.

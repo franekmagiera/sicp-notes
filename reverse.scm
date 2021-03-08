@@ -25,6 +25,9 @@
     (start-reverse-test n (runtime))
 )
 
+; ------------------------
+; First implementation (time O(n^2))
+
 (define (reverse xs)
     (if (null? xs)
         xs
@@ -34,11 +37,13 @@
 
 (reverse (list 1 4 9 16 25))
 
-; First implementation. O(n^2)
 
 (timed-reverse-test 100)
 (timed-reverse-test 1000)
 (timed-reverse-test 10000)
+
+; ------------------------
+; Second implementation (time O(n))
 
 (define (reverse xs)
     (define (iter ys accumulator)
@@ -52,7 +57,6 @@
 
 (reverse (list 1 4 9 16 25))
 
-; Second implementation.
 (timed-reverse-test 100)
 (timed-reverse-test 1000)
 (timed-reverse-test 10000)
