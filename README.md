@@ -271,5 +271,46 @@ This methodology enables us to make use of abstraction barriers. This is done by
 ```
 A hand-wavy description of this exercise: cons takes in two arguments and returns a function that takes in another function as a parameter and applies it to the two arguments passed to cons. So, to get the first argument, car calls the function returned by cons with a function that just returns the first parameter. Cdr's implementation is analogous.
 
+## Closure
+>In general, an operation for combining data objects satisfies the closure property if the results of combining things with that operation can themselves be combined using the same operation. Closure is the key to power in any means of combination because it permits us to create hierarchical structures -- structures made up of parts, which themselves are made up of parts, and so on.
+
+>The use of the word *closure* here comes from abstract algebra, where a set of elements is said to be closed under an operation if applying the operation to elements in the set produces an element that is again an element of the set. The Lisp community also (unfortunately) uses the word *closure* to describe a totally unrelated concept: A closure is an implementation technique for representing procedures with free variables. We do not use the word *closure* in this second sense in this book.
+
+## Subsets
+A set can be represented as a list of elements. A set of all subsets can be represented as a list of lists. A set of all subsets can be computed by appending the head of the list to all of the subsets of the tail of the list. Then, the set of all subsets is a union of sets with head appended and the subsets of tail. Translating to Scheme:
+```
+(define (subsets s)
+    (if (null? s)
+        (list '())
+        (let ((rest (subsets (cdr s))))
+            (append rest (map (lambda (subset) (cons (car s) subset)) rest))
+        )
+    )
+)
+```
+
 ## Sequences as conventional interfaces
 Operations on sequences such as accumulate, filter, map and enumerate describe very common patterns that are useful for many different applications. By using those common methods our programs are more modular. It is also a good strategy to manage complexity. Moreover, expressing our programs using those common interfaces makes it easier to reason about them and also makes it easier for other people to understand.
+
+## Permutations
+>Here is a plan for generating the permutations of S: For each item x in S, recursively generate the sequence of permutations of S - x and adjoin x to the front of each one. This yields, for each x in S, the sequence of permutations of S that begin with x. Combining these sequences for all x gives all the permutations of S.
+
+```
+(define (permutations s)
+    (if (null? s)
+        (list '())
+        (flatmap (lambda (x)
+                    (map (lambda (p) (cons x p)) (permutations (remove x s)))
+                 )
+         s
+        )
+    )
+)
+```
+
+## Stratified design
+>We have also obtained a glimpse of another crucial idea about languages and program design. This is the approach of stratified design, the notion that a complex system should be structured as a sequence of levels that are described using a sequence of languages. Each level is constructed by combining parts that are regarded as primitive at that level, and the parts constructed at each level are used as primitives at the next level. The language used at each level of a stratified design has primitives, means of combination, and means of abstraction appropriate to that level of detail.
+
+>Stratified design pervades the engineering of complex systems. For example, in computer engineering, resistors and transistors are combined (and described using a language of analog circuits) to produce parts such as and-gates and or-gates, which form the primitives of a language for digital-circuit design. These parts are combined to build processors, bus structures, and memory systems, which are in turn combined to form computers, using languages appropriate to computer architecture. Computers are combined to form distributed systems, using languages appropriate for describing network interconnections, and so on.
+
+>Stratified design helps make programs robust, that is, it makes it likely that small changes in a specification will require correspondingly small changes in the program. [...] In general, each level of a stratified design provides a different vocabulary for expressing the characteristics of the system, and a different kind of ability to change it.
