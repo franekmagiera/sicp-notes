@@ -314,3 +314,54 @@ Operations on sequences such as accumulate, filter, map and enumerate describe v
 >Stratified design pervades the engineering of complex systems. For example, in computer engineering, resistors and transistors are combined (and described using a language of analog circuits) to produce parts such as and-gates and or-gates, which form the primitives of a language for digital-circuit design. These parts are combined to build processors, bus structures, and memory systems, which are in turn combined to form computers, using languages appropriate to computer architecture. Computers are combined to form distributed systems, using languages appropriate for describing network interconnections, and so on.
 
 >Stratified design helps make programs robust, that is, it makes it likely that small changes in a specification will require correspondingly small changes in the program. [...] In general, each level of a stratified design provides a different vocabulary for expressing the characteristics of the system, and a different kind of ability to change it.
+
+## Sets as binary trees
+### Exercise 2.64
+```
+(define (list->tree elements)
+  (car (partial-tree elements (length elements))))
+
+(define (partial-tree elts n)
+  (if (= n 0)
+      (cons '() elts)
+      (let ((left-size (quotient (- n 1) 2)))
+        (let ((left-result (partial-tree elts left-size)))
+          (let ((left-tree (car left-result))
+                (non-left-elts (cdr left-result))
+                (right-size (- n (+ left-size 1))))
+            (let ((this-entry (car non-left-elts))
+                  (right-result (partial-tree (cdr non-left-elts)
+                                              right-size)))
+              (let ((right-tree (car right-result))
+                    (remaining-elts (cdr right-result)))
+                (cons (make-tree this-entry left-tree right-tree)
+                      remaining-elts))))))))
+```
+
+Procedure `list->tree` converts an ordered list into a binary tree, while `(partial-tree elts n)` produces a balanced tree containing first `n` elements of the ordered list. It takes in an integer `n` and a list of at least n element `elts` and returns a pair whose car is the constructed tree and whose cdr is the list of element that was not included in the tree.
+
+This procedure works as follows:
+
+Firstly, if `n` equals 0, then return a pair consisting of an empty tree and a list of elements that were not included in the tree.
+
+Then, determine the size of the left subtree. It is equal to `(quotient (- n 1) 2)`. We subtract 1 from `n` to not count the entry value and then we divide the rest by 2 to form balanced left and right subtrees. So the size of the left subtree contains roughly half of the elements that are to be included in the tree.
+
+Next, the left tree is constructed recursively by passing the `elts` and `left-size` to the `partial-tree` procedure.
+
+Then, we can define `left-tree` using `(car left-result)`. The elements that were not included in the left subtree are `non-left-elts`. The size of the right subtree has to be `(- n (+ left-size 1))` - we subtract the size of the left subtree and the entry node. We use the first element of the `non-left-elts` as entry value and then construct the right subtree recursively using the `partial-tree` procedure.
+
+Finally, we can just construct the tree using the left subtree, entry value and right subtree and also return the elements that were not included. By initially calling the `partial-tree` procedure with `n` equal to the length of `elts` we guarantee that no elements will be left out from the final tree. Initially, `elts` have to be ordered so that the tree is a binary tree (elements in the left subtree are smaller or equal to the entry node and elements in the right subtree are larger or equal to the entry node).
+
+The order of growth is O(n). Every time `partial-tree` is called it calls itself twice, but with n halved. Intuitively, every node has to be visited once.
+
+```
+ ]=> (list->tree (list 1 3 5 7 9 11))
+
+;        5
+;       / \
+;      /   \
+;     /     \
+;    1       9
+;     \     / \
+;      3   7   11
+```
