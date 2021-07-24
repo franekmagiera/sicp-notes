@@ -365,3 +365,31 @@ The order of growth is O(n). Every time `partial-tree` is called it calls itself
 ;     \     / \
 ;      3   7   11
 ```
+
+## Data-directed programming
+
+The general strategy of checking the type of a datum and calling an appropriate procedure is called *dispatching on type*.
+Weaknesses of dispatching o na type:
+ * generic interface procedures must know about all the different representations (types)
+ * no two procedures in the entire system can have the same name
+
+This technique is nod additive - each time a new representation (type) is installed, the person implementing this representation has to modify procedures for generic selectors and the people interfacing the individual representation must modify their code to avoid name conflicts.
+
+*Data-directed programming* is a technique of designing programs to work with a table of operations -- rows are operations, columns are types and entries are implementations. (note: related to the expression problem https://craftinginterpreters.com/representing-code.html#the-expression-problem and the visitor pattern)
+
+## Message passing
+An alternative strategy to data-directed programming. In this approach the data object is an entity that receives the requested operation name as a "message". 
+Example:
+```
+(define (make-from-real-imag x y)
+  (define (dispatch op)
+    (cond ((eq? op 'real-part) x)
+          ((eq? op 'imag-part) y)
+          ((eq? op 'magnitude)
+           (sqrt (+ (square x) (square y))))
+          ((eq? op 'angle) (atan y x))
+          (else
+           (error "Unknown op -- MAKE-FROM-REAL-IMAG" op))))
+  dispatch)
+```
+
