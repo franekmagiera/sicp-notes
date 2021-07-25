@@ -1,0 +1,21 @@
+#lang sicp
+(define (make-monitored f)
+  (define calls 0)
+  (define (mf arg)
+    (begin (set! calls (inc calls))
+           (f arg)))
+  (define (dispatch m)
+    (cond ((eq? m 'how-many-calls?) calls)
+          ((eq? m 'reset-count) (begin (set! calls 0) calls))
+          (else (mf m))))
+  dispatch)
+
+(define (square x) (* x x))
+(define monitored-square (make-monitored square))
+(monitored-square 2)
+(monitored-square 3)
+(monitored-square 'how-many-calls?)
+(monitored-square 'reset-count)
+(monitored-square 4)
+(monitored-square 'how-many-calls?)
+
