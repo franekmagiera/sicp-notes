@@ -413,4 +413,7 @@ In addition to making programs more modular, concurrent computation can provide 
 The problem is that several processes may share a state variable and try to manipulate it at the same time.
 
 ## Streams
+Streams can be used to implement well-defined mathematical functions whose behaviour doesn't change, but from user's perspecvtive the system appears to have changing state. The former is extremely attractive for dealing with concurrent systems. 
+
+On the other hand, if we look closely, we can see time-related problems creeping into functional models as well. One particularly troublesome area arises when we wish to design interactive systems, especially ones that model interactions between independent entities. (e.g. how to 'merge' two incoming streams?)
 
