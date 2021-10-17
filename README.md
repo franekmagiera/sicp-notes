@@ -393,3 +393,24 @@ Example:
   dispatch)
 ```
 
+## Local state and concurrency
+We ordinarily view the world as populated by independent objects, each of which has a state that changes over time. An object is said to ``have state'' if its behavior is influenced by its history. We can characterize an object's state by one or more state variables, which among them maintain enough information about history to determine the object's current behavior.
+
+In a system composed of many objects, the objects are rarely completely independent. Each may influence the states of others through interactions, which serve to couple the state variables of one object to those of other objects. Indeed, the view that a system is composed of separate objects is most useful when the state variables of the system can be grouped into closely coupled subsystems that are only loosely coupled to other subsystems.
+
+This view of a system can be a powerful framework for organizing computational models of the system. For such a model to be modular, it should be decomposed into computational objects that model the actual objects in the system. Each computational object must have its own local state variables describing the actual object's state. Since the states of objects in the system being modeled change over time, the state variables of the corresponding computational objects must also change. If we choose to model the flow of time in the system by the elapsed time in the computer, then we must have a way to construct computational objects whose behaviors change as our programs run. In particular, if we wish to model state variables by ordinary symbolic names in the programming language, then the language must provide an assignment operator to enable us to change the value associated with a name.
+
+By introducing assignment and the technique of hiding state in local variables, we are able to structure systems in a modular fashion. However, we loose referartional transparency and the substition model can no longer be used to reason about our programs. Now a variable somehow refers to a place where a value can be stored, and the value stored at this place can change. Instead, a notion of environments has to be introduced.
+
+In general, programming with assignment forces us to carefully consider the relative orders of the assignments to make sure that each statement is using the correct version of the variables that have been changed. This issue simply does not arise in functional programs. The complexity of imperative programs becomes even worse if we consider applications in which several processes execute concurrently.
+
+The central issue lurking beneath the complexity of state, sameness, and change is that by introducing assignment we are forced to admit time into our computational models. Before we introduced assignment, all our programs were timeless, in the sense that any expression that has a value always has the same value. After introducing assignment, successive evaluations of the same expression can yield different values. The result of evaluating an expression depends not only on the expression itself, but also on whether the evaluation occurs before or after these moments. Building models in terms of computational objects with local state forces us to confront time as an essential concept in programming.
+
+The practice of writing programs as if they were to be executed concurrently forces the programmer to avoid inessential timing constraints and thus makes programs more modular.
+
+In addition to making programs more modular, concurrent computation can provide a speed advantage over sequential computation. Sequential computers execute only one operation at a time, so the amount of time it takes to perform a task is proportional to the total number of operations performed. However, if it is possible to decompose a problem into pieces that are relatively independent and need to communicate only rarely, it may be possible to allocate pieces to separate computing processors, producing a speed advantage proportional to the number of processors available.
+
+The problem is that several processes may share a state variable and try to manipulate it at the same time.
+
+## Streams
+
