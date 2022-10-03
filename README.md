@@ -3,12 +3,12 @@ These are my notes for the [Structure and Implementation of Computer Programs](h
 
 ## Applicative order vs normal order
 Applicative order - evaluate the arguments and then apply.
-```
+```scheme
 (square (+ 5 1)) -> (square 6) -> (* 6 6) -> 36
 ```
 
 Normal order - fully expand and then reduce.
-```
+```scheme
 (square (+ 5 1)) -> (* (+ 5 1) (+ 5 1)) -> (* 6 6) -> 36
 ```
 
@@ -16,7 +16,7 @@ Lisp uses applicative order evaluation.
 This is why `if` and `cond` have to be special forms (see Exercise 1.6.).
 
 ## Conditional expressions
-```
+```scheme
 (cond (<p1> <e1>)
       (<p2> <e2>))
 
@@ -44,7 +44,7 @@ Tail-recursive property holds when iterative process described by recursive proc
 >A function f if defined by the rule that f(n) = n if n < 3 and f(n) = f(n-1) + 2f(n-2) + 3f(n-3) if n >= 3. Write a procedure that computes f by means of a recursive process. Write a procedure that computes f by means of an iterative process.
 
 Writing a procedure that computes f by means of a recursive process is quite natural:
-```
+```scheme
 (define (frec n)
       (if (< n 3)
             n 
@@ -58,21 +58,21 @@ Writing a procedure that computes f by means of a recursive process is quite nat
 ```
 
 What is the intuiton behind computing f by means of an iterative process? So, to compute f(n), we need f(n-1), f(n-2) and f(n-3). Looking the other way around, if we have f(n-1), f(n-2) and f(n-3) we can compute f(n). Then, we can compute f(n+1) because we have f(n), f(n-1) and f(n-2) and we no longer need f(n-3). So, we need 3 state variables and a rule to update them. Let's start by what we know and assign:
-```
+```scheme
 a <- f(2) = 2
 b <- f(1) = 1
 c <- f(0) = 0
 ```
 
 Next, we can update them according to the intuiton above:
-```
+```scheme
 a <- a + 2b + 3c = f(2) + 2f(1) + 3f(0) = f(3)
 b <- a = f(2)
 c <- b = f(1)
 ```
 
 Continuing this procedure, we can see that after n steps c = f(n). This is kind of like memoization/dynamic programming, as we only keep the values that we know we will need. Translating to Scheme:
-```
+```scheme
 (define (fiter-helper a b c count)
       (if (= count 0)
             c
@@ -89,11 +89,11 @@ Continuing this procedure, we can see that after n steps c = f(n). This is kind 
 >Design a procedure that evolves an iterative exponentiation process that uses successive squaring and uses logarithmic number of steps.
 
 Using the observation that 
-```
+```scheme
 b^n = b^(n/2)^2 = b^2^(n/2)
 ```
 and suggestion to use an additional state variable a so that ab^n is constant:
-```
+```scheme
 (define (fast-expt-inner b n a)
     (cond ((= n 0) a)
           ((even? n) (fast-expt-inner (* b b) (/ n 2) a))
@@ -109,13 +109,13 @@ It is a nice suggestion to define an invariant quality that remains unchanged fr
 The GCD of two integers *a* and *b* is the largest integer that divides both *a* and *b* with no remainder.
 
 We can implement an efficient algorithm for computing *GCD(a,b)* based on the observation that, if *r* is the remainder of *a* divided by *b*, then the common divisors are exactly the same as the common divisors of *b* and *r*. Therefore, we can use the equation:
-```
+```scheme
 GCD(a, b) = GCD(b, r) ; where r := a mod b
 ```
 Applying this reduction repeatedly will finally yield a pair where the second number is 0. The GCD of any number *a* and 0 is *a* itself.
 
 So using the above observation we can implement the algorithm:
-```
+```scheme
 (define (gcd a b)
       (if (= b 0)
           a
@@ -189,7 +189,7 @@ could be expressed as:
 f(x, y) = xa^2 + yb + ab; where a = 1 + xy and b = 1 - y
 
 Translating to Scheme we can bind those local variables *a* and *b* using another inner procedure:
-```
+```scheme
 (define (f x y)
       (define (f-helper a b)
             (+ (* x (square a))
@@ -202,7 +202,7 @@ Translating to Scheme we can bind those local variables *a* and *b* using anothe
 ```
 
 This can also be expressed using `lambda`:
-```
+```scheme
 (define (f x y)
       (
             (lambda (a b)
@@ -219,7 +219,7 @@ This can also be expressed using `lambda`:
 ```
 
 There is a special form called `let` that makes it more convenient:
-```
+```scheme
 (define (f x y)
       (let (
             (a (+ 1 (* x y)))
@@ -234,7 +234,7 @@ There is a special form called `let` that makes it more convenient:
 ```
 
 Its general form is:
-```
+```scheme
 (let (
       (<var1> <exp1>)
       (<var2> <exp2>)
@@ -256,7 +256,7 @@ This methodology enables us to make use of abstraction barriers. This is done by
 > In general, we can think of data as defined by some collection of selectors and constructors, together with specified conditions that these procedures must fulfill in order to be a valid representation.
 
 ### Exercise 2.4. - procedural representation of pairs
-```
+```scheme
 (define (cons x y)
       (lambda (m) (m x y))
 )
@@ -278,7 +278,7 @@ A hand-wavy description of this exercise: cons takes in two arguments and return
 
 ## Subsets
 A set can be represented as a list of elements. A set of all subsets can be represented as a list of lists. A set of all subsets can be computed by appending the head of the list to all of the subsets of the tail of the list. Then, the set of all subsets is a union of sets with head appended and the subsets of tail. Translating to Scheme:
-```
+```scheme
 (define (subsets s)
     (if (null? s)
         (list '())
@@ -295,7 +295,7 @@ Operations on sequences such as accumulate, filter, map and enumerate describe v
 ## Permutations
 >Here is a plan for generating the permutations of S: For each item x in S, recursively generate the sequence of permutations of S - x and adjoin x to the front of each one. This yields, for each x in S, the sequence of permutations of S that begin with x. Combining these sequences for all x gives all the permutations of S.
 
-```
+```scheme
 (define (permutations s)
     (if (null? s)
         (list '())
@@ -317,7 +317,7 @@ Operations on sequences such as accumulate, filter, map and enumerate describe v
 
 ## Sets as binary trees
 ### Exercise 2.64
-```
+```scheme
 (define (list->tree elements)
   (car (partial-tree elements (length elements))))
 
@@ -354,7 +354,7 @@ Finally, we can just construct the tree using the left subtree, entry value and 
 
 The order of growth is O(n). Every time `partial-tree` is called it calls itself twice, but with n halved. Intuitively, every node has to be visited once.
 
-```
+```scheme
  ]=> (list->tree (list 1 3 5 7 9 11))
 
 ;        5
@@ -380,7 +380,7 @@ This technique is nod additive - each time a new representation (type) is instal
 ## Message passing
 An alternative strategy to data-directed programming. In this approach the data object is an entity that receives the requested operation name as a "message". 
 Example:
-```
+```scheme
 (define (make-from-real-imag x y)
   (define (dispatch op)
     (cond ((eq? op 'real-part) x)
@@ -416,4 +416,3 @@ The problem is that several processes may share a state variable and try to mani
 Streams can be used to implement well-defined mathematical functions whose behaviour doesn't change, but from user's perspecvtive the system appears to have changing state. The former is extremely attractive for dealing with concurrent systems. 
 
 On the other hand, if we look closely, we can see time-related problems creeping into functional models as well. One particularly troublesome area arises when we wish to design interactive systems, especially ones that model interactions between independent entities. (e.g. how to 'merge' two incoming streams?)
-
