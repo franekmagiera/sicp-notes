@@ -373,7 +373,7 @@ Weaknesses of dispatching o na type:
  * generic interface procedures must know about all the different representations (types)
  * no two procedures in the entire system can have the same name
 
-This technique is nod additive - each time a new representation (type) is installed, the person implementing this representation has to modify procedures for generic selectors and the people interfacing the individual representation must modify their code to avoid name conflicts.
+This technique is not additive - each time a new representation (type) is installed, the person implementing this representation has to modify procedures for generic selectors and the people interfacing the individual representation must modify their code to avoid name conflicts.
 
 *Data-directed programming* is a technique of designing programs to work with a table of operations -- rows are operations, columns are types and entries are implementations. (note: related to the expression problem https://craftinginterpreters.com/representing-code.html#the-expression-problem and the visitor pattern)
 
@@ -416,3 +416,14 @@ The problem is that several processes may share a state variable and try to mani
 Streams can be used to implement well-defined mathematical functions whose behaviour doesn't change, but from user's perspecvtive the system appears to have changing state. The former is extremely attractive for dealing with concurrent systems. 
 
 On the other hand, if we look closely, we can see time-related problems creeping into functional models as well. One particularly troublesome area arises when we wish to design interactive systems, especially ones that model interactions between independent entities. (e.g. how to 'merge' two incoming streams?)
+
+## Metalinguistic Abstraction
+Metaliguistic Abstraction revolves around establishing new languages. An evaluator (or interpreter) for a programming language is a procedure that, when applied to an expression of the language, performs the actions to evaluate that expression. The evaluator determines the meaning of expressions in a programming language. The evaluator is just another program.
+
+An evaluator reduces the expressions in the environments to procedures that have to be applied with specific arguments. Those in turn, are reduced to new expressions in new environments. The cycle continues until we get to primitive procedures that can be applied directly, or symbols, which values can be just looked up in the environment.
+
+An evaluator that is written in the same language that it evaluates is said to be metacircular.
+
+A macro is a mechanism for adding user-defined transformations that allow the user to add new derived expressions and specify their implementation as syntactic transformations without modifying the evaluator. 
+
+A special form is a primitive function specially marked so that its arguments are not all evaluated. Most special forms define control structures or perform variable bindings—things which functions cannot do. 
