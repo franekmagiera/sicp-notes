@@ -427,3 +427,5 @@ An evaluator that is written in the same language that it evaluates is said to b
 A macro is a mechanism for adding user-defined transformations that allow the user to add new derived expressions and specify their implementation as syntactic transformations without modifying the evaluator. 
 
 A special form is a primitive function specially marked so that its arguments are not all evaluated. Most special forms define control structures or perform variable bindings—things which functions cannot do. 
+
+Parsing is matching the input against some grammatical structure.
