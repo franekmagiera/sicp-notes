@@ -415,6 +415,8 @@ The problem is that several processes may share a state variable and try to mani
 ## Streams
 Streams can be used to implement well-defined mathematical functions whose behaviour doesn't change, but from user's perspecvtive the system appears to have changing state. The former is extremely attractive for dealing with concurrent systems. 
 
+>With streams we can achieve the best of both worlds: We can formulate programs elegantly as sequence manipulations, while attaining the efficiency of incremental computation.
+
 On the other hand, if we look closely, we can see time-related problems creeping into functional models as well. One particularly troublesome area arises when we wish to design interactive systems, especially ones that model interactions between independent entities. (e.g. how to 'merge' two incoming streams?)
 
 ## Metalinguistic Abstraction
